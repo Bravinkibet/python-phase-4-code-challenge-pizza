@@ -21,11 +21,9 @@ api = Api(app)
 
 @app.route("/")
 def index():
-    return "<h1>Code challenge 4</h1>"
+    return "<h1>Code challenge pizza</h1>"
 
-# Define the resource for Restaurants
 class RestaurantsResource(Resource):
-    # Get all restaurants
     def get(self):
         restaurants = Restaurant.query.all()
         return [restaurant.to_dict(only=('address', 'id', 'name')) for restaurant in restaurants]
@@ -33,7 +31,6 @@ class RestaurantsResource(Resource):
 api.add_resource(RestaurantsResource, '/restaurants')
 
 class RestaurantResource(Resource):
-    # Get one restaurant
     def get(self, id):
         restaurant = db.session.get(Restaurant, id)
         if restaurant:
@@ -42,7 +39,6 @@ class RestaurantResource(Resource):
             return {"error": "Restaurant not found"}, 404
 
     def delete(self, id):
-        # Delete one restaurant
         restaurant = db.session.get(Restaurant, id)
         if restaurant:
             RestaurantPizza.query.filter_by(restaurant_id=id).delete()
@@ -54,17 +50,14 @@ class RestaurantResource(Resource):
 
 api.add_resource(RestaurantResource, '/restaurants/<int:id>')
 
-# Define the resource for Pizzas
 class PizzasResource(Resource):
     def get(self):
         pizzas = Pizza.query.all()
-        return [pizza.to_dict(only=('id', 'name', 'ingredients')) for pizza in pizzas]
+        return [pizza.to_dict(only=('id', 'ingredients','name')) for pizza in pizzas]
 
 api.add_resource(PizzasResource, '/pizzas')
 
-# Define the resource for RestaurantPizzas
 class RestaurantPizzasResource(Resource):
-    # Create one restaurant_pizza
     def post(self):
         data = request.get_json()
         try:

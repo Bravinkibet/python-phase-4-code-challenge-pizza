@@ -10,7 +10,6 @@ metadata = MetaData(
     }
 )
 
-
 db = SQLAlchemy(metadata=metadata)
 
 class Restaurant(db.Model, SerializerMixin):

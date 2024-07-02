@@ -4,16 +4,17 @@ from sqlalchemy.orm import validates
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy_serializer import SerializerMixin
 
+# Custom naming convention for foreign keys
 metadata = MetaData(
     naming_convention={
         "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
     }
 )
 
-
+# Initialize SQLAlchemy with custom metadata
 db = SQLAlchemy(metadata=metadata)
 
-
+# Define Restaurant model
 class Restaurant(db.Model, SerializerMixin):
     __tablename__ = "restaurants"
 
@@ -27,7 +28,7 @@ class Restaurant(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Restaurant {self.name}>"
 
-
+# Define Pizza model
 class Pizza(db.Model, SerializerMixin):
     __tablename__ = "pizzas"
 
@@ -41,7 +42,7 @@ class Pizza(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Pizza {self.name}, {self.ingredients}>"
 
-
+# Define RestaurantPizza model
 class RestaurantPizza(db.Model, SerializerMixin):
     __tablename__ = "restaurant_pizzas"
 
@@ -51,6 +52,7 @@ class RestaurantPizza(db.Model, SerializerMixin):
     pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'), nullable=False)
     restaurant = db.relationship('Restaurant', back_populates='restaurant_pizzas')
     pizza = db.relationship('Pizza', back_populates='restaurant_pizzas')
+    
     @validates('price')
     def validate_price(self, key, price):
         if price < 1 or price > 30:
